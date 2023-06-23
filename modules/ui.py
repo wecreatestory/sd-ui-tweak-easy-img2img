@@ -290,7 +290,7 @@ def create_toprow(is_img2img):
             with gr.Row(elem_id=f"{id_part}_generate_box", elem_classes="generate-box"):
                 interrupt = gr.Button('Interrupt', elem_id=f"{id_part}_interrupt", elem_classes="generate-box-interrupt")
                 skip = gr.Button('Skip', elem_id=f"{id_part}_skip", elem_classes="generate-box-skip")
-                submit = gr.Button('Generate', elem_id=f"{id_part}_generate", variant='primary')
+                # submit = gr.Button('Generate', elem_id=f"{id_part}_generate", variant='primary')
 
                 skip.click(
                     fn=lambda: shared.state.skip(),
@@ -328,7 +328,7 @@ def create_toprow(is_img2img):
                 prompt_styles = gr.Dropdown(label="Styles", elem_id=f"{id_part}_styles", choices=[k for k, v in shared.prompt_styles.styles.items()], value=[], multiselect=True)
                 create_refresh_button(prompt_styles, shared.prompt_styles.reload, lambda: {"choices": [k for k, v in shared.prompt_styles.styles.items()]}, f"refresh_{id_part}_styles")
 
-    return prompt, prompt_styles, negative_prompt, submit, button_interrogate, button_deepbooru, prompt_style_apply, save_style, paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button
+    return prompt, prompt_styles, negative_prompt, None, button_interrogate, button_deepbooru, prompt_style_apply, save_style, paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button
 
 
 def setup_progressbar(*args, **kwargs):
@@ -433,9 +433,11 @@ def create_override_settings_dropdown(tabname, row):
     return dropdown
 
 
+submit = None
 def create_ui():
     import modules.img2img
     import modules.txt2img
+    global submit
 
     reload_javascript()
 
@@ -445,7 +447,7 @@ def create_ui():
     modules.scripts.scripts_txt2img.initialize_scripts(is_img2img=False)
 
     with gr.Blocks(analytics_enabled=False) as txt2img_interface:
-        txt2img_prompt, txt2img_prompt_styles, txt2img_negative_prompt, submit, _, _, txt2img_prompt_style_apply, txt2img_save_style, txt2img_paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button = create_toprow(is_img2img=False)
+        txt2img_prompt, txt2img_prompt_styles, txt2img_negative_prompt, _, _, _, txt2img_prompt_style_apply, txt2img_save_style, txt2img_paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button = create_toprow(is_img2img=False)
 
         dummy_component = gr.Label(visible=False)
         txt_prompt_img = gr.File(label="", elem_id="txt2img_prompt_image", file_count="single", type="binary", visible=False)
@@ -523,6 +525,13 @@ def create_ui():
                     elif category == "scripts":
                         with FormGroup(elem_id="txt2img_script_container"):
                             custom_inputs = modules.scripts.scripts_txt2img.setup_ui()
+
+                    elif category == "custom_section":
+                        # with FormGroup(elem_id="txt2img_script_container"):
+                        #     custom_inputs = modules.scripts.scripts_txt2img.setup_ui()
+                        # test_button = gr.Button(value="my test button do not click!")
+                        submit = gr.Button('Generate', elem_id=f"img2img_generate", variant='primary')
+
 
             hr_resolution_preview_inputs = [enable_hr, width, height, hr_scale, hr_resize_x, hr_resize_y]
 
@@ -681,7 +690,7 @@ def create_ui():
     modules.scripts.scripts_img2img.initialize_scripts(is_img2img=True)
 
     with gr.Blocks(analytics_enabled=False) as img2img_interface:
-        img2img_prompt, img2img_prompt_styles, img2img_negative_prompt, submit, img2img_interrogate, img2img_deepbooru, img2img_prompt_style_apply, img2img_save_style, img2img_paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button = create_toprow(is_img2img=True)
+        img2img_prompt, img2img_prompt_styles, img2img_negative_prompt, _, img2img_interrogate, img2img_deepbooru, img2img_prompt_style_apply, img2img_save_style, img2img_paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button = create_toprow(is_img2img=True)
 
         img2img_prompt_img = gr.File(label="", elem_id="img2img_prompt_image", file_count="single", type="binary", visible=False)
 

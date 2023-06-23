@@ -55,6 +55,7 @@ ui_reorder_categories = [
     "batch",
     "override_settings",
     "scripts",
+    "custom_section"
 ]
 
 # https://huggingface.co/datasets/freddyaboulton/gradio-theme-subdomains/resolve/main/subdomains.json
